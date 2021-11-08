@@ -65,7 +65,13 @@
                       <input type="checkbox" />10
                     </form><br>
                     <button id="createProdutct" class="btn btn-primary">Cadastrar</button>
-                    <button id="getProducts" class="btn btn-primary">Ver produtos (console)</button>
+                    <button id="getProducts" class="btn btn-primary">Atualizar lista de produtos</button>
+                </div>
+                <br>
+                <div class="panel">
+                  <ul id="produtos">
+                    <!-- Inserido Por JS -->
+                  </ul>
                 </div>
           </body>
         </div>
@@ -99,6 +105,14 @@
       const productsSnapshot = await getDocs(productsCol);
       const productsList = productsSnapshot.docs.map(doc => doc.data());
       console.log(productsList)
+      // Limpa o UL
+      document.getElementById('produtos').innerHTML = ""
+      productsList.forEach(element => {
+        // Adiciona LI's no UL
+        let li = document.createElement('li')
+        li.innerHTML = element.nome + ' - ' + element.preco
+        document.getElementById('produtos').appendChild(li)
+      });
     }
     async function cadastrarProduto(nome, descricao, preco) {
       try {
@@ -108,6 +122,19 @@
           preco: document.getElementById('precoInput').value
         });
         console.log("Document written with ID: ", docRef.id);
+        alert('Produto Cadastrado!')
+        const productsCol = collection(db, 'products');
+        const productsSnapshot = await getDocs(productsCol);
+        const productsList = productsSnapshot.docs.map(doc => doc.data());
+        console.log(productsList)
+        // Limpa o UL
+        document.getElementById('produtos').innerHTML = ""
+        productsList.forEach(element => {
+          // Adiciona LI's no UL
+          let li = document.createElement('li')
+          li.innerHTML = element.nome + ' - ' + element.preco
+          document.getElementById('produtos').appendChild(li)
+        });
       } catch (e) {
         console.error("Error adding document: ", e);
       }

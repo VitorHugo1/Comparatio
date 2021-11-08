@@ -47,11 +47,11 @@
               <div class="container">
                   <form class="cadastro form-control">
                       <label for="fname">Nome:</label><br>
-                      <input type="text" id="nome" name="nome"><br>
+                      <input type="text" id="nomeInput" name="nome"><br>
                       <label for="fname">Descrição:</label><br>
-                      <input type="text" id="descricao" name="descricao"><br>
+                      <input type="text" id="descricaoInput" name="descricao"><br>
                       <label for="fname">Preço:</label><br>
-                      <input type="text" id="preco" name="preco"><br>
+                      <input type="text" id="precoInput" name="preco"><br>
                       <label for="fpopularidade">Popularidade:</label><br>
                       <input type="checkbox" />1
                       <input type="checkbox" />2
@@ -64,12 +64,8 @@
                       <input type="checkbox" />9
                       <input type="checkbox" />10
                     </form><br>
-                    <form class="form-control" action="">
-                      <label for="img">Select image:</label>
-                      <input type="file" id="img" name="img" accept="image/*">
-                      <input type="submit">
-                    </form>
-                    <button class="btn-primary">Cadastrar</button>
+                    <button id="createProdutct" class="btn btn-primary">Cadastrar</button>
+                    <button id="getProducts" class="btn btn-primary">Ver produtos (console)</button>
                 </div>
           </body>
         </div>
@@ -80,10 +76,11 @@
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc } from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-firestore.js'
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
   
-    // Your web app's Firebase configuration
+    // Your web app's Firebase configuration  
     const firebaseConfig = {
       apiKey: "AIzaSyDRomhAW987plruZ4db95FI2sks-0yxm5A",
       authDomain: "comparatio-cf4c0.firebaseapp.com",
@@ -95,6 +92,28 @@
   
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    // Get a list of cities from your database
+    async function getProducts() {
+      const productsCol = collection(db, 'products');
+      const productsSnapshot = await getDocs(productsCol);
+      const productsList = productsSnapshot.docs.map(doc => doc.data());
+      console.log(productsList)
+    }
+    async function cadastrarProduto(nome, descricao, preco) {
+      try {
+        const docRef = await addDoc(collection(db, "products"), {
+          nome: document.getElementById('nomeInput').value,
+          descricao: document.getElementById('descricaoInput').value,
+          preco: document.getElementById('precoInput').value
+        });
+        console.log("Document written with ID: ", docRef.id);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    }
+    document.getElementById('getProducts').addEventListener('click', getProducts)
+    document.getElementById('createProdutct').addEventListener('click', cadastrarProduto)
   </script>
 </body>
 </html>

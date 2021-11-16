@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparatio</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">Comparatio</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Sobre</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="comentario.html">Comentarios</a>
+          </li>
+        </ul>
+        <span>
+          <a class="btn btn-primary w-100" href="cadastrar.html">Cadastrar</a>
+        </span>
+      </div>
+    </div>
+  </nav>
+  <main>
+    <div class="container mt-3">
+      <div class="row">
+        <div class="col"><!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Comparatio</title>
+            <link rel="stylesheet" href="css/style.css">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+          </head>
+          <body>
+            <div class="container">
+                <form class="cadastro form-control">
+                    <label for="fnameproduto">Nome Produto:</label><br>
+                    <input type="text" id="nomeInput" name="nome"><br>
+                    <label for="fname">Nome:</label><br>
+                    <input type="text" id="descricaoInput" name="descricao"><br>
+                    <label for="fcomentario">Comentarios:</label><br>
+                    <input type="text" id="descricaoInput" name="descricao"><br><br>
+                    <button id="createProdutct" class="btn btn-primary">Cadastrar</button>
+                </form>
+            </div>
+        </body>
+    </div>
+  </div>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, addDoc } from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-firestore.js'
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration  
+  const firebaseConfig = {
+    apiKey: "AIzaSyDRomhAW987plruZ4db95FI2sks-0yxm5A",
+    authDomain: "comparatio-cf4c0.firebaseapp.com",
+    projectId: "comparatio-cf4c0",
+    storageBucket: "comparatio-cf4c0.appspot.com",
+    messagingSenderId: "245111463940",
+    appId: "1:245111463940:web:b1d4ee7126243674915551"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  // Get a list of cities from your database
+  async function getProducts() {
+    const productsCol = collection(db, 'products');
+    const productsSnapshot = await getDocs(productsCol);
+    const productsList = productsSnapshot.docs.map(doc => doc.data());
+    console.log(productsList)
+    // Limpa o UL
+    document.getElementById('produtos').innerHTML = ""
+    productsList.forEach(element => {
+      // Adiciona LI's no UL
+      let li = document.createElement('li')
+      li.innerHTML = element.nome + ' - ' + element.preco
+      document.getElementById('produtos').appendChild(li)
+    });
+  }
+  async function cadastrarProduto(nome, descricao, preco) {
+    try {
+      const docRef = await addDoc(collection(db, "products"), {
+        nome: document.getElementById('nomeInput').value,
+        descricao: document.getElementById('descricaoInput').value,
+        preco: document.getElementById('precoInput').value
+      });
+      console.log("Document written with ID: ", docRef.id);
+      alert('Produto Cadastrado!')
+      const productsCol = collection(db, 'products');
+      const productsSnapshot = await getDocs(productsCol);
+      const productsList = productsSnapshot.docs.map(doc => doc.data());
+      console.log(productsList)
+      // Limpa o UL
+      document.getElementById('produtos').innerHTML = ""
+      productsList.forEach(element => {
+        // Adiciona LI's no UL
+        let li = document.createElement('li')
+        li.innerHTML = element.nome + ' - ' + element.preco
+        document.getElementById('produtos').appendChild(li)
+      });
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  }
+  document.getElementById('getProducts').addEventListener('click', getProducts)
+  document.getElementById('createProdutct').addEventListener('click', cadastrarProduto)
+</script>
+</body>
+</html>
